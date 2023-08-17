@@ -1,6 +1,5 @@
 # 项目排除路径
 /target/
 
-*.log
-
-.gitignore
+# 日志文件
+/logs/
