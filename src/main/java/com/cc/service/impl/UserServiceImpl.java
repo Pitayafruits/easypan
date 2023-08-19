@@ -1,4 +1,4 @@
-package com.cc.service;
+package com.cc.service.impl;
 
 import com.cc.entity.po.User;
 import com.cc.entity.query.UserQuery;
@@ -6,6 +6,7 @@ import com.cc.entity.vo.PaginationResultVO;
 import com.cc.entity.query.SimplePage;
 import com.cc.mappers.UserMapper;
 import com.cc.enums.PageSize;
+import com.cc.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
