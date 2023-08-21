@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.easyJavaTest.mappers.EmailCodeMapper">
+<mapper namespace="com.cc.mappers.EmailCodeMapper">
 	<!--实体映射-->
-	<resultMap id="base_result_map" type="com.easyJavaTest.entity.po.EmailCode">
+	<resultMap id="base_result_map" type="com.cc.entity.po.EmailCode">
 	<!--邮箱-->
 		<result column="email" property="email"/>
 	<!--验证码-->
@@ -73,7 +73,7 @@
 	</select>
 
 <!--插入，匹配有值的字段-->
-	<insert id="insert" parameterType="com.easyJavaTest.entity.po.EmailCode">
+	<insert id="insert" parameterType="com.cc.entity.po.EmailCode">
 		INSERT INTO tb_email_code
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="bean.email != null">
@@ -106,7 +106,7 @@
 	</insert>
 
 <!--插入或者更新-->
-	<insert id="insertOrUpdate" parameterType="com.easyJavaTest.entity.po.EmailCode">
+	<insert id="insertOrUpdate" parameterType="com.cc.entity.po.EmailCode">
 		INSERT INTO tb_email_code
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="bean.email != null">
@@ -149,7 +149,7 @@
 	</insert>
 
 <!--批量插入-->
-	<insert id="insertBatch" parameterType="com.easyJavaTest.entity.po.EmailCode">
+	<insert id="insertBatch" parameterType="com.cc.entity.po.EmailCode">
 		INSERT INTO tb_email_code(email,code,creat_time,status)Values
 		<foreach collection="list" item="item" separator="," open="(" close=")">
 			#{item.email},#{item.code},#{item.creatTime},#{item.status}
@@ -157,7 +157,7 @@
 	</insert>
 
 <!--批量插入或更新-->
-	<insert id="insertOrUpdateBatch" parameterType="com.easyJavaTest.entity.po.EmailCode">
+	<insert id="insertOrUpdateBatch" parameterType="com.cc.entity.po.EmailCode">
 		INSERT INTO tb_email_code(email,code,creat_time,status)Values
 		<foreach collection="list" item="item" separator="," open="(" close=")">
 			#{item.email},#{item.code},#{item.creatTime},#{item.status}
@@ -178,7 +178,7 @@
 	</delete>
 
 <!--根据EmailAndCode更新-->
-	<update id="updateByEmailAndCode" parameterType="com.easyJavaTest.entity.po.EmailCode">
+	<update id="updateByEmailAndCode" parameterType="com.cc.entity.po.EmailCode">
 		UPDATE tb_email_code
 		<set>
 			<if test="bean.email != null">
