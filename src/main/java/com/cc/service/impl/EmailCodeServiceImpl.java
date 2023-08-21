@@ -1,15 +1,23 @@
 package com.cc.service.impl;
 
+import com.cc.entity.constants.Constants;
 import com.cc.entity.po.EmailCode;
+import com.cc.entity.po.User;
 import com.cc.entity.query.EmailCodeQuery;
+import com.cc.entity.query.UserQuery;
 import com.cc.entity.vo.PaginationResultVO;
 import com.cc.entity.query.SimplePage;
+import com.cc.exception.BusinessException;
 import com.cc.mappers.EmailCodeMapper;
 import com.cc.enums.PageSize;
+import com.cc.mappers.UserMapper;
 import com.cc.service.EmailCodeService;
+import com.cc.utils.StringTools;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +30,9 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 
 	@Resource
 	private EmailCodeMapper<EmailCode,EmailCodeQuery> emailCodeMapper;
+
+	@Resource
+	private UserMapper<User, UserQuery> userMapper;
 
 	/**
 	 * 根据条件查询列表
@@ -113,6 +124,32 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 	@Override
 	public int updateByEmailAndCode(EmailCode bean, String email, String code) {
 		return this.emailCodeMapper.updateByEmailAndCode(bean, email, code);
+	}
+
+	/**
+	 * 发送邮箱验证码
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void sendEmailCode(String email, Integer type) throws BusinessException {
+		if (type == Constants.ZERO){
+			User user = userMapper.selectByEmail(email);
+			if (user != null){
+				throw new BusinessException("该邮箱已被注册，请更换");
+			}
+		}
+		String code = StringTools.getRandomNumber(Constants.LENGTH_5);
+
+		//TODO 发送验证码
+
+		emailCodeMapper.disabeleEmailCode(email);
+
+		EmailCode emailCode = new EmailCode();
+		emailCode.setCode(code);
+		emailCode.setEmail(email);
+		emailCode.setStatus(Constants.ZERO);
+		emailCode.setCreatTime(new Date());
+		emailCodeMapper.insert(emailCode);
 	}
 
 }

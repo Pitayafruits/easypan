@@ -28,4 +28,8 @@ public interface EmailCodeMapper<T,P> extends BaseMapper {
 	 */
 	int updateByEmailAndCode(@Param("bean") T t, @Param("email") String email, @Param("code") String code);
 
+	/**
+	 * 新的验证码让老的失效
+	 */
+    void disabeleEmailCode(@Param("email") String email);
 }

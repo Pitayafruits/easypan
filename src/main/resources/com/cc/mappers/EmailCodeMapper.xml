@@ -196,4 +196,8 @@
 		</set>
 	</update>
 
+	<update id="disabeleEmailCode">
+        update tb_email_code set status = 1 where email = #{email} and status = 0
+	</update>
+
 </mapper>

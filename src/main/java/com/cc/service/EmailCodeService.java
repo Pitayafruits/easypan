@@ -3,6 +3,8 @@ import java.util.List;
 import com.cc.entity.po.EmailCode;
 import com.cc.entity.query.EmailCodeQuery;
 import com.cc.entity.vo.PaginationResultVO;
+import com.cc.exception.BusinessException;
+
 /**
  * @Description: 邮箱验证码表Service
  * @author: pitayafruit
@@ -60,4 +62,8 @@ public interface EmailCodeService{
 	 */
 	int updateByEmailAndCode(EmailCode bean, String email, String code);
 
+	/**
+	 * 发送邮箱验证码
+	 */
+    void sendEmailCode(String email, Integer type) throws BusinessException;
 }
