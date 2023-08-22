@@ -16,4 +16,7 @@ public class Constants {
 
     //状态码
     public static final Integer ZERO = 0;
+
+    //redis key
+    public static final String REDIS_KEY_SYS_SETTING = "easypan:syssetting:";
 }

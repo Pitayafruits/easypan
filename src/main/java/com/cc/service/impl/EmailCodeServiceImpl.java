@@ -1,6 +1,9 @@
 package com.cc.service.impl;
 
+import com.cc.component.RedisComponent;
+import com.cc.config.AppConfig;
 import com.cc.entity.constants.Constants;
+import com.cc.entity.dto.SysSettingsDto;
 import com.cc.entity.po.EmailCode;
 import com.cc.entity.po.User;
 import com.cc.entity.query.EmailCodeQuery;
@@ -13,10 +16,15 @@ import com.cc.enums.PageSize;
 import com.cc.mappers.UserMapper;
 import com.cc.service.EmailCodeService;
 import com.cc.utils.StringTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.List;
 
@@ -28,11 +36,22 @@ import java.util.List;
 @Service("emailCodeService")
 public class EmailCodeServiceImpl implements EmailCodeService {
 
+	private static final Logger logger = LoggerFactory.getLogger(EmailCodeServiceImpl.class);
+
 	@Resource
 	private EmailCodeMapper<EmailCode,EmailCodeQuery> emailCodeMapper;
 
 	@Resource
 	private UserMapper<User, UserQuery> userMapper;
+
+	@Resource
+	private JavaMailSender javaMailSender;
+
+	@Resource
+	private AppConfig appConfig;
+
+	@Resource
+	private RedisComponent redisComponent;
 
 	/**
 	 * 根据条件查询列表
@@ -138,10 +157,12 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 				throw new BusinessException("该邮箱已被注册，请更换");
 			}
 		}
+
 		String code = StringTools.getRandomNumber(Constants.LENGTH_5);
+		//发送验证码
+		sendCode(email,code);
 
-		//TODO 发送验证码
-
+		//失效老的验证码
 		emailCodeMapper.disabeleEmailCode(email);
 
 		EmailCode emailCode = new EmailCode();
@@ -152,4 +173,25 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 		emailCodeMapper.insert(emailCode);
 	}
 
+	/**
+	 * 发送验证码
+	 */
+	private void sendCode(String toEmail,String code) throws BusinessException {
+		try {
+			MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+			mimeMessageHelper.setFrom(appConfig.getSendUserName());
+			mimeMessageHelper.setTo(toEmail);
+			SysSettingsDto sysSettingsDto = redisComponent.getSysSettingsDto();
+			//邮件主体
+			mimeMessageHelper.setSubject(sysSettingsDto.getRegisterEmailTitle());
+			mimeMessageHelper.setText(String.format(sysSettingsDto.getRegisterEmailContent(),code));
+			mimeMessageHelper.setSentDate(new Date());
+			//发送
+			javaMailSender.send(mimeMessage);
+		} catch (Exception e) {
+			logger.error("邮件发送失败",e);
+			throw new BusinessException("邮件发送失败！");
+		}
+	}
 }
