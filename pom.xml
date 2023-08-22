@@ -35,6 +35,7 @@
     <commons.lang3.version>3.4</commons.lang3.version>
     <commons.codec.version>1.9</commons.codec.version>
     <commons.io.version>2.5</commons.io.version>
+    <lombok.version>1.18.24</lombok.version>
   </properties>
 
   <dependencies>
@@ -51,6 +52,13 @@
           <artifactId>logback-core</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!--lombok-->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
     </dependency>
 
     <!--邮件发送-->
