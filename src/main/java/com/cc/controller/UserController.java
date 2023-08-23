@@ -1,6 +1,8 @@
 package com.cc.controller;
 
 
+import com.cc.annotaion.GlobalInterceptor;
+import com.cc.annotaion.VerifyParam;
 import com.cc.entity.constants.Constants;
 import com.cc.entity.vo.ResponseVO;
 import com.cc.exception.BusinessException;
@@ -58,7 +60,8 @@ public class UserController extends ABaseController {
      * 发送邮箱验证码
      */
     @PostMapping("/sendEmailCode")
-    public ResponseVO sendEmailCode(HttpSession session, String email, String checkCode, Integer type) throws BusinessException {
+    @GlobalInterceptor
+    public ResponseVO sendEmailCode(HttpSession session, @VerifyParam(required = true) String email, @VerifyParam(required = true) String checkCode, @VerifyParam(required = true) Integer type) throws BusinessException {
         try {
             //验证码比较
             if (checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY_EMAIL))) {
