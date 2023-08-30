@@ -1,6 +1,8 @@
 package com.cc.utils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+
 
 /**
  * 生成验证码工具类
@@ -21,5 +23,10 @@ public class StringTools {
             return true;
         }
         return false;
+    }
+
+    //md5加密
+    public static String encodeByMd5(String originPassword){
+        return isEmpty(originPassword) ? null : DigestUtils.md2Hex(originPassword);
     }
 }
