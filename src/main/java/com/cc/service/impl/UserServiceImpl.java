@@ -1,15 +1,24 @@
 package com.cc.service.impl;
 
+import com.cc.component.RedisComponent;
+import com.cc.entity.constants.Constants;
+import com.cc.entity.dto.SysSettingsDto;
 import com.cc.entity.po.User;
 import com.cc.entity.query.UserQuery;
 import com.cc.entity.vo.PaginationResultVO;
 import com.cc.entity.query.SimplePage;
+import com.cc.enums.UserStatusEnum;
+import com.cc.exception.BusinessException;
 import com.cc.mappers.UserMapper;
 import com.cc.enums.PageSize;
+import com.cc.service.EmailCodeService;
 import com.cc.service.UserService;
+import com.cc.utils.StringTools;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +31,12 @@ public class UserServiceImpl implements UserService {
 
 	@Resource
 	private UserMapper<User,UserQuery> userMapper;
+
+	@Resource
+	private EmailCodeService emailCodeService;
+
+	@Resource
+	private RedisComponent redisComponent;
 
 	/**
 	 * 根据条件查询列表
@@ -161,6 +176,39 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int updateByQqOpenId(User bean, String qqOpenId) {
 		return this.userMapper.updateByQqOpenId(bean, qqOpenId);
+	}
+
+	/**
+	 * 注册新用户
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void register(String email, String nickName, String password, String emailCode) throws BusinessException {
+		//校验邮箱是否被注册
+		User emailUser = userMapper.selectByEmail(email);
+		if (emailUser != null){
+			throw new BusinessException("该邮箱已被注册！");
+		}
+		//校验昵称是否存在
+		User nickNameUser = userMapper.selectByNickName(nickName);
+		if (nickNameUser != null){
+			throw new BusinessException("该昵称已被占用");
+		}
+		//校验邮箱验证码
+		emailCodeService.checkCode(email,emailCode);
+		//设置用户信息
+		String userId = StringTools.getRandomNumber(Constants.LENGTH_10);
+		User user = new User();
+		user.setUserId(userId);
+		user.setNickName(nickName);
+		user.setEmail(email);
+		user.setPassword(StringTools.encodeByMd5(password));
+		user.setJoinTime(new Date());
+		user.setStatus(UserStatusEnum.ENABLE.getStatus());
+		user.setUseSpace(0L);
+		SysSettingsDto sysSettingsDto = redisComponent.getSysSettingsDto();
+		user.setTotalSpace(sysSettingsDto.getUserInitUseSpace() * Constants.MB);
+		userMapper.insert(user);
 	}
 
 }

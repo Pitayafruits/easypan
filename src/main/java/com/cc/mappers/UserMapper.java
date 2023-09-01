@@ -54,4 +54,8 @@ public interface UserMapper<T,P> extends BaseMapper {
 	 */
 	int updateByQqOpenId(@Param("bean") T t, @Param("qqOpenId") String qqOpenId);
 
+	/**
+	 * 根据昵称查询
+	 */
+    T selectByNickName(@Param("nickName")String nickName);
 }

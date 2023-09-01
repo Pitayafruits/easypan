@@ -66,4 +66,9 @@ public interface EmailCodeService{
 	 * 发送邮箱验证码
 	 */
     void sendEmailCode(String email, Integer type) throws BusinessException;
+
+	/**
+	 * 校验邮箱验证码
+	 */
+	void checkCode(String email,String code) throws BusinessException;
 }

@@ -3,6 +3,8 @@ import java.util.List;
 import com.cc.entity.po.User;
 import com.cc.entity.query.UserQuery;
 import com.cc.entity.vo.PaginationResultVO;
+import com.cc.exception.BusinessException;
+
 /**
  * @Description: 用户信息表Service
  * @author: pitayafruit
@@ -89,5 +91,10 @@ public interface UserService{
 	 * 根据QqOpenId更新
 	 */
 	int updateByQqOpenId(User bean, String qqOpenId);
+
+	/**
+	 * 注册新用户
+	 */
+	void register(String email,String nickName,String password,String emailCode) throws BusinessException;
 
 }
