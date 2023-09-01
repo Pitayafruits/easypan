@@ -19,6 +19,8 @@ public class Constants {
 
     public static final Integer ZERO = 0;
 
+    public static final Long MB = 1024 * 1024L;
+
     //redis key
     public static final String REDIS_KEY_SYS_SETTING = "easypan:syssetting:";
 }
