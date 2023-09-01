@@ -194,4 +194,23 @@ public class EmailCodeServiceImpl implements EmailCodeService {
 			throw new BusinessException("邮件发送失败！");
 		}
 	}
+
+	/**
+	 * 校验邮箱验证码
+	 */
+	@Override
+	public void checkCode(String email, String code) throws BusinessException {
+		//校验邮箱验证码
+		EmailCode emailCode = emailCodeMapper.selectByEmailAndCode(email, code);
+		if (email == null){
+			throw new BusinessException("邮箱验证码不正确！");
+		}
+		//校验验证码是否过期
+		if (emailCode.getStatus() == 1 || System.currentTimeMillis() - emailCode.getCreatTime().getTime() > Constants.LENGTH_15 * 1000 * 60){
+			throw new BusinessException("邮箱验证码已过期!");
+		}
+		//老验证码失效
+		emailCodeMapper.disabeleEmailCode(email);
+	}
+
 }

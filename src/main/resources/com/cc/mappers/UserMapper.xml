@@ -472,4 +472,9 @@
 		</set>
 	</update>
 
+	<!--根据NickName查询-->
+	<select id="selectByNickName" resultMap="base_result_map">
+		SELECT <include refid="base_column_list"/> FROM sys_user where nick_name = #{nickName}
+	</select>
+
 </mapper>

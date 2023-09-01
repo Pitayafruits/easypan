@@ -5,6 +5,7 @@ import com.cc.annotaion.GlobalInterceptor;
 import com.cc.annotaion.VerifyParam;
 import com.cc.entity.constants.Constants;
 import com.cc.entity.vo.ResponseVO;
+import com.cc.enums.VerifyRegexEnum;
 import com.cc.exception.BusinessException;
 import com.cc.service.EmailCodeService;
 import com.cc.service.UserService;
@@ -61,7 +62,10 @@ public class UserController extends ABaseController {
      */
     @PostMapping("/sendEmailCode")
     @GlobalInterceptor
-    public ResponseVO sendEmailCode(HttpSession session, @VerifyParam(required = true) String email, @VerifyParam(required = true) String checkCode, @VerifyParam(required = true) Integer type) throws BusinessException {
+    public ResponseVO sendEmailCode(HttpSession session,
+                                    @VerifyParam(required = true,regex = VerifyRegexEnum.EMAIL,max = 150) String email,
+                                    @VerifyParam(required = true) String checkCode,
+                                    @VerifyParam(required = true) Integer type) throws BusinessException {
         try {
             //验证码比较
             if (checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY_EMAIL))) {
@@ -74,5 +78,27 @@ public class UserController extends ABaseController {
         }
     }
 
+    /**
+     * 注册用户
+     */
+    @PostMapping("/register")
+    @GlobalInterceptor
+    public ResponseVO register(HttpSession session,
+                                    @VerifyParam(required = true,regex = VerifyRegexEnum.EMAIL,max = 150) String email,
+                                    @VerifyParam(required = true) String nickName,
+                                    @VerifyParam(required = true,regex = VerifyRegexEnum.PASSWORD,min = 8,max = 18) String password,
+                                    @VerifyParam(required = true) String checkCode,
+                                    @VerifyParam(required = true) String emailCode) throws BusinessException {
+        try {
+            //验证码比较
+            if (checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY))) {
+                throw new BusinessException("图片验证码错误！");
+            }
+            userService.register(email,nickName,password,emailCode);
+            return getSuccessResponseVO(null);
+        } finally {
+            session.removeAttribute(Constants.CHECK_CODE_KEY);
+        }
+    }
 
 }
