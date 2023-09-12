@@ -4,6 +4,7 @@ package com.cc.controller;
 import com.cc.annotaion.GlobalInterceptor;
 import com.cc.annotaion.VerifyParam;
 import com.cc.entity.constants.Constants;
+import com.cc.entity.dto.SessionWebUserDto;
 import com.cc.entity.vo.ResponseVO;
 import com.cc.enums.VerifyRegexEnum;
 import com.cc.exception.BusinessException;
@@ -101,4 +102,25 @@ public class UserController extends ABaseController {
         }
     }
 
+    /**
+     * 用户登录
+     */
+    @PostMapping("/register")
+    @GlobalInterceptor
+    public ResponseVO login(HttpSession session,
+                               @VerifyParam(required = true,regex = VerifyRegexEnum.EMAIL,max = 150) String email,
+                               @VerifyParam(required = true) String password,
+                               @VerifyParam(required = true) String checkCode) throws BusinessException {
+        try {
+            //验证码比较
+            if (checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY))) {
+                throw new BusinessException("图片验证码错误！");
+            }
+            SessionWebUserDto sessionWebUserDto = userService.login(email, password);
+            session.setAttribute(Constants.SESSION_KEY,sessionWebUserDto);
+            return getSuccessResponseVO(sessionWebUserDto);
+        } finally {
+            session.removeAttribute(Constants.CHECK_CODE_KEY);
+        }
+    }
 }

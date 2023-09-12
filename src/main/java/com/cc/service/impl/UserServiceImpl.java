@@ -1,8 +1,11 @@
 package com.cc.service.impl;
 
 import com.cc.component.RedisComponent;
+import com.cc.config.AppConfig;
 import com.cc.entity.constants.Constants;
+import com.cc.entity.dto.SessionWebUserDto;
 import com.cc.entity.dto.SysSettingsDto;
+import com.cc.entity.dto.UserSpaceDto;
 import com.cc.entity.po.User;
 import com.cc.entity.query.UserQuery;
 import com.cc.entity.vo.PaginationResultVO;
@@ -14,6 +17,7 @@ import com.cc.enums.PageSize;
 import com.cc.service.EmailCodeService;
 import com.cc.service.UserService;
 import com.cc.utils.StringTools;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +41,9 @@ public class UserServiceImpl implements UserService {
 
 	@Resource
 	private RedisComponent redisComponent;
+
+	@Resource
+	private AppConfig appConfig;
 
 	/**
 	 * 根据条件查询列表
@@ -209,6 +216,41 @@ public class UserServiceImpl implements UserService {
 		SysSettingsDto sysSettingsDto = redisComponent.getSysSettingsDto();
 		user.setTotalSpace(sysSettingsDto.getUserInitUseSpace() * Constants.MB);
 		userMapper.insert(user);
+	}
+
+	/**
+	 * 用户登录
+	 */
+	@Override
+	public SessionWebUserDto login(String email, String password) throws BusinessException {
+		//校验账号密码是否错误
+		User user = userMapper.selectByEmail(email);
+		if (user == null || user.getPassword().equals(password)){
+			throw new BusinessException("登陆失败，账号或密码错误！");
+		}
+		//检验账号是否被禁用
+		if (user.getStatus().equals(UserStatusEnum.DISABLE.getStatus())){
+			throw new BusinessException("登录失败，账号已被禁用！");
+		}
+		User loginUser = new User();
+		loginUser.setLastJoinTime(new Date());
+		userMapper.updateByUserId(loginUser, loginUser.getUserId());
+		//创建返回dto
+		SessionWebUserDto sessionWebUserDto = new SessionWebUserDto();
+		sessionWebUserDto.setNickName(user.getNickName());
+		sessionWebUserDto.setUserId(user.getUserId());
+		if (ArrayUtils.contains(appConfig.getAdminEmails().split(":"),email)){
+			sessionWebUserDto.setAdmin(true);
+		}else{
+			sessionWebUserDto.setAdmin(false);
+		}
+		//用户空间
+		UserSpaceDto userSpaceDto = new UserSpaceDto();
+		//TODO 文件表建好后查询数据库set
+		//userSpaceDto.setUserSpace();
+		userSpaceDto.setTotalSpace(user.getTotalSpace());
+		redisComponent.saveUserSpaceUse(user.getUserId(),userSpaceDto);
+		return null;
 	}
 
 }
