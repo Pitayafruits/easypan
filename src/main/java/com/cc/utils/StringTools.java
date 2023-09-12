@@ -27,6 +27,6 @@ public class StringTools {
 
     //md5加密
     public static String encodeByMd5(String originPassword){
-        return isEmpty(originPassword) ? null : DigestUtils.md2Hex(originPassword);
+        return isEmpty(originPassword) ? null : DigestUtils.md5Hex(originPassword);
     }
 }

@@ -11,4 +11,7 @@ public class AppConfig {
     @Value("${spring.mail.username}")
     private String sendUserName;
 
+    @Value("${admin.emails}")
+    private String adminEmails;
+
 }

@@ -1,5 +1,7 @@
 package com.cc.service;
 import java.util.List;
+
+import com.cc.entity.dto.SessionWebUserDto;
 import com.cc.entity.po.User;
 import com.cc.entity.query.UserQuery;
 import com.cc.entity.vo.PaginationResultVO;
@@ -96,5 +98,10 @@ public interface UserService{
 	 * 注册新用户
 	 */
 	void register(String email,String nickName,String password,String emailCode) throws BusinessException;
+
+	/**
+	 * 用户登录
+	 */
+	SessionWebUserDto login(String email,String password) throws BusinessException;
 
 }
