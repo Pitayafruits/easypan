@@ -105,7 +105,7 @@ public class UserController extends ABaseController {
     /**
      * 用户登录
      */
-    @PostMapping("/register")
+    @PostMapping("/login")
     @GlobalInterceptor
     public ResponseVO login(HttpSession session,
                                @VerifyParam(required = true,regex = VerifyRegexEnum.EMAIL,max = 150) String email,
