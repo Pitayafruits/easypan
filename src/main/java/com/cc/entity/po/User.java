@@ -61,7 +61,7 @@ public class User implements Serializable {
 	 */
 	private Long useSpace;
 	/**
-	 * 
+	 * 总空间单位byte
 	 */
 	private Long totalSpace;
 	/**
