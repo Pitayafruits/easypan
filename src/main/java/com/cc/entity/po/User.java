@@ -59,7 +59,7 @@ public class User implements Serializable {
 	/**
 	 * 使用空间单位byte
 	 */
-	private Long useSpace;
+	private Long userSpace;
 	/**
 	 * 总空间单位byte
 	 */
@@ -193,15 +193,15 @@ public class User implements Serializable {
 	/**
 	 * 使用空间单位byte
 	 */
-	public void setUseSpace(Long useSpace) {
-		this.useSpace = useSpace;
+	public void setUserSpace(Long userSpace) {
+		this.userSpace = userSpace;
 	}
 
 	/**
 	 * 使用空间单位byte
 	 */
-	public Long getUseSpace() {
-		return this.useSpace;
+	public Long getUserSpace() {
+		return this.userSpace;
 	}
 
 	/**
@@ -220,6 +220,6 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User {" + "用户id : " + (userId == null ? "空" : userId) + "," + "用户昵称 : " + (nickName == null ? "空" : nickName) + "," + "绑定邮箱 : " + (email == null ? "空" : email) + "," + "绑定QQid : " + (qqOpenId == null ? "空" : qqOpenId) + "," + "头像 : " + (qqAvatar == null ? "空" : qqAvatar) + "," + "密码 : " + (password == null ? "空" : password) + "," + "注册时间 : " + (joinTime == null ? "空" : DateUtils.format(joinTime, DateTimePatternEnum.YYYY_MM_DD_HH_MM_SS.getPattern())) + "," + "上次登录时间 : " + (lastJoinTime == null ? "空" : DateUtils.format(lastJoinTime, DateTimePatternEnum.YYYY_MM_DD_HH_MM_SS.getPattern())) + "," + "账号状态 0：禁用 1：启用 : " + (status == null ? "空" : status) + "," + "使用空间单位byte : " + (useSpace == null ? "空" : useSpace) + "," + " : " + (totalSpace == null ? "空" : totalSpace) + "}";
+		return "User {" + "用户id : " + (userId == null ? "空" : userId) + "," + "用户昵称 : " + (nickName == null ? "空" : nickName) + "," + "绑定邮箱 : " + (email == null ? "空" : email) + "," + "绑定QQid : " + (qqOpenId == null ? "空" : qqOpenId) + "," + "头像 : " + (qqAvatar == null ? "空" : qqAvatar) + "," + "密码 : " + (password == null ? "空" : password) + "," + "注册时间 : " + (joinTime == null ? "空" : DateUtils.format(joinTime, DateTimePatternEnum.YYYY_MM_DD_HH_MM_SS.getPattern())) + "," + "上次登录时间 : " + (lastJoinTime == null ? "空" : DateUtils.format(lastJoinTime, DateTimePatternEnum.YYYY_MM_DD_HH_MM_SS.getPattern())) + "," + "账号状态 0：禁用 1：启用 : " + (status == null ? "空" : status) + "," + "使用空间单位byte : " + (userSpace == null ? "空" : userSpace) + "," + " : " + (totalSpace == null ? "空" : totalSpace) + "}";
 	}
 }
