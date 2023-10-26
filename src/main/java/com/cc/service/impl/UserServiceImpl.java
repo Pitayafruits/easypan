@@ -211,8 +211,9 @@ public class UserServiceImpl implements UserService {
 		user.setEmail(email);
 		user.setPassword(StringTools.encodeByMd5(password));
 		user.setJoinTime(new Date());
+		user.setLastJoinTime(new Date());
 		user.setStatus(UserStatusEnum.ENABLE.getStatus());
-		user.setUseSpace(0L);
+		user.setUserSpace(0L);
 		SysSettingsDto sysSettingsDto = redisComponent.getSysSettingsDto();
 		user.setTotalSpace(sysSettingsDto.getUserInitUseSpace() * Constants.MB);
 		userMapper.insert(user);
