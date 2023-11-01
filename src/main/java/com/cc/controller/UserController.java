@@ -123,4 +123,26 @@ public class UserController extends ABaseController {
             session.removeAttribute(Constants.CHECK_CODE_KEY);
         }
     }
+
+    /**
+     * 注册用户
+     */
+    @PostMapping("/resetPwd")
+    @GlobalInterceptor
+    public ResponseVO resetPwd(HttpSession session,
+                               @VerifyParam(required = true,regex = VerifyRegexEnum.EMAIL,max = 150) String email,
+                               @VerifyParam(required = true,regex = VerifyRegexEnum.PASSWORD,min = 8,max = 18) String password,
+                               @VerifyParam(required = true) String checkCode,
+                               @VerifyParam(required = true) String emailCode) throws BusinessException {
+        try {
+            //验证码比较
+            if (checkCode.equalsIgnoreCase((String) session.getAttribute(Constants.CHECK_CODE_KEY))) {
+                throw new BusinessException("图片验证码错误！");
+            }
+            userService.register(email,nickName,password,emailCode);
+            return getSuccessResponseVO(null);
+        } finally {
+            session.removeAttribute(Constants.CHECK_CODE_KEY);
+        }
+    }
 }
