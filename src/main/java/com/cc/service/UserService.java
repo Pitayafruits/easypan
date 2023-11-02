@@ -104,4 +104,8 @@ public interface UserService{
 	 */
 	SessionWebUserDto login(String email,String password) throws BusinessException;
 
+	/**
+	 * 找回密码
+	 */
+	void restPwd(String email, String password, String emailCode) throws BusinessException;
 }
