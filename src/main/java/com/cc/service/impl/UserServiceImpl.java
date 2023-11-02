@@ -254,4 +254,24 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	/**
+	 * 找回密码
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void restPwd(String email, String password, String emailCode) throws BusinessException {
+		//检查邮箱账号是否存在
+		User userInfo = userMapper.selectByEmail(email);
+		if (userInfo == null){
+			throw new BusinessException("邮箱账号不存在！");
+		}
+		//校验验证码
+		emailCodeService.checkCode(email,emailCode);
+		//校验通过修改用户密码
+		User updateInfo = new User();
+		updateInfo.setPassword(StringTools.encodeByMd5(password));
+		//保存修改
+		userMapper.updateByEmail(updateInfo,email);
+	}
+
 }

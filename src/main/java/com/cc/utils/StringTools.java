@@ -29,4 +29,15 @@ public class StringTools {
     public static String encodeByMd5(String originPassword){
         return isEmpty(originPassword) ? null : DigestUtils.md5Hex(originPassword);
     }
+
+    //路径检查
+    public static boolean pathIsOk(String path){
+        if (StringTools.isEmpty(path)){
+            return true;
+        }
+        if (path.contains("../") || path.contains("..\\")){
+            return false;
+        }
+        return true;
+    }
 }

@@ -72,9 +72,4 @@ public interface EmailCodeService{
 	 */
 	void checkCode(String email,String code) throws BusinessException;
 
-	/**
-	 * 找回密码
-	 */
-	//todo 未完成
-	void resetPwd(String email,String password,String emailCode);
 }
