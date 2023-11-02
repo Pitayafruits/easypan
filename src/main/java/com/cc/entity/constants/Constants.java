@@ -31,4 +31,12 @@ public class Constants {
 
     public static final String REDIS_KEY_USER_SPACE_USE = "easypan:user:space:use:";
 
+    public static final String FILE_FOLDER_FILE = "/file/";
+
+    public static final String FILE_FOLDER_AVATAR_NAME = "avatar/";
+
+    public static final String AVATAR_SUFFIX = ".jpg";
+
+    public static final String AVATAR_DEFAULT = "default_avatar.jpg";
+
 }
