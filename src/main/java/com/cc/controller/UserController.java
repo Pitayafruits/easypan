@@ -3,9 +3,11 @@ package com.cc.controller;
 
 import com.cc.annotaion.GlobalInterceptor;
 import com.cc.annotaion.VerifyParam;
+import com.cc.component.RedisComponent;
 import com.cc.config.AppConfig;
 import com.cc.entity.constants.Constants;
 import com.cc.entity.dto.SessionWebUserDto;
+import com.cc.entity.dto.UserSpaceDto;
 import com.cc.entity.vo.ResponseVO;
 import com.cc.enums.VerifyRegexEnum;
 import com.cc.exception.BusinessException;
@@ -50,6 +52,8 @@ public class UserController extends ABaseController {
     @Resource
     private AppConfig appConfig;
 
+    @Resource
+    private RedisComponent redisComponent;
 
     /**
      * 获取验证码
@@ -199,6 +203,27 @@ public class UserController extends ABaseController {
         }finally {
             writer.close();
         }
+    }
+
+    /**
+     * 获得用户信息
+     */
+    @RequestMapping("/getUserInfo")
+    @GlobalInterceptor(checkParams = true)
+    public ResponseVO getUserInfo(HttpSession session){
+        SessionWebUserDto sessionWebUserDto = getUserInfoFromSession(session);
+        return getSuccessResponseVO(sessionWebUserDto);
+    }
+
+    /**
+     * 获取用户使用空间
+     */
+    @RequestMapping("/getUseSpace")
+    @GlobalInterceptor(checkParams = true)
+    public ResponseVO getUseSpace(HttpSession session){
+        SessionWebUserDto sessionWebUserDto = getUserInfoFromSession(session);
+        UserSpaceDto spaceDto = redisComponent.getUserSpaceUse(sessionWebUserDto.getUserId());
+        return getSuccessResponseVO(spaceDto);
     }
 
 }

@@ -33,8 +33,20 @@ public class RedisComponent {
      */
     public void saveUserSpaceUse(String userId, UserSpaceDto userSpaceDto){
         redisUtils.setex(Constants.REDIS_KEY_USER_SPACE_USE + userId,userSpaceDto,Constants.REDIS_KEY_EXPIRES_DAY);
-
     }
 
+    /**
+     * 获取用户空间
+     */
+     public UserSpaceDto getUserSpaceUse(String userId){
+        UserSpaceDto spaceDto = (UserSpaceDto) redisUtils.get(Constants.REDIS_KEY_USER_SPACE_USE + userId);
+        if (spaceDto == null) {
+            spaceDto = new UserSpaceDto();
+            spaceDto.setUserSpace(0L);
+            spaceDto.setTotalSpace(getSysSettingsDto().getUserInitUseSpace() * Constants.MB);
+            saveUserSpaceUse(userId,spaceDto);
+        }
+        return spaceDto;
+    }
 
 }
