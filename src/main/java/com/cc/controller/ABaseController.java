@@ -1,5 +1,7 @@
 package com.cc.controller;
 
+import com.cc.entity.constants.Constants;
+import com.cc.entity.dto.SessionWebUserDto;
 import com.cc.entity.vo.ResponseVO;
 
 import com.cc.enums.ResponseCodeEnum;
@@ -8,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 
 import static java.lang.System.in;
@@ -63,4 +66,10 @@ public class ABaseController {
             }
         }
     }
+
+    protected SessionWebUserDto getUserInfoFromSession (HttpSession session) {
+        SessionWebUserDto sessionWebUserDto = (SessionWebUserDto) session.getAttribute(Constants.SESSION_KEY);
+        return sessionWebUserDto;
+    }
+
 }
