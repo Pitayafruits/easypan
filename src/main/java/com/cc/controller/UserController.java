@@ -8,6 +8,7 @@ import com.cc.config.AppConfig;
 import com.cc.entity.constants.Constants;
 import com.cc.entity.dto.SessionWebUserDto;
 import com.cc.entity.dto.UserSpaceDto;
+import com.cc.entity.po.User;
 import com.cc.entity.vo.ResponseVO;
 import com.cc.enums.VerifyRegexEnum;
 import com.cc.exception.BusinessException;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -224,6 +226,42 @@ public class UserController extends ABaseController {
         SessionWebUserDto sessionWebUserDto = getUserInfoFromSession(session);
         UserSpaceDto spaceDto = redisComponent.getUserSpaceUse(sessionWebUserDto.getUserId());
         return getSuccessResponseVO(spaceDto);
+    }
+
+    /**
+     * 登出
+     */
+    @RequestMapping("/logout")
+    @GlobalInterceptor(checkParams = true)
+    public ResponseVO logout(HttpSession session){
+        session.invalidate(); //清除session
+        return getSuccessResponseVO(null);
+    }
+
+    /**
+     * 上传头像
+     */
+    @RequestMapping("/updateUserAvatar")
+    @GlobalInterceptor
+    public ResponseVO updateUserAvatar(HttpSession session, MultipartFile avatar){
+        SessionWebUserDto webUserDto = getUserInfoFromSession(session);
+        String baseFolder = appConfig.getProjectFolder() + Constants.FILE_FOLDER_FILE;
+        File targetFireFolder = new File(baseFolder + Constants.FILE_FOLDER_AVATAR_NAME);
+        if (!targetFireFolder.exists()){
+            targetFireFolder.mkdirs();
+        }
+        File targetFile = new File(targetFireFolder.getPath() + "/" + webUserDto.getUserId() + Constants.AVATAR_SUFFIX);
+        try {
+            avatar.transferTo(targetFile);
+        } catch (Exception e){
+            logger.error("上传头像失败！",e);
+        }
+        User user = new User();
+        user.setQqAvatar("");
+        userService.updateByUserId(user, webUserDto.getUserId());
+        webUserDto.setAvatar(null);
+        session.setAttribute(Constants.SESSION_KEY, webUserDto);
+        return getSuccessResponseVO(null);
     }
 
 }
