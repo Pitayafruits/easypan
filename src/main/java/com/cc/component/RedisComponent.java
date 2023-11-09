@@ -42,6 +42,7 @@ public class RedisComponent {
         UserSpaceDto spaceDto = (UserSpaceDto) redisUtils.get(Constants.REDIS_KEY_USER_SPACE_USE + userId);
         if (spaceDto == null) {
             spaceDto = new UserSpaceDto();
+            //TODO 查询当前用户已经上传文件大小的总和
             spaceDto.setUserSpace(0L);
             spaceDto.setTotalSpace(getSysSettingsDto().getUserInitUseSpace() * Constants.MB);
             saveUserSpaceUse(userId,spaceDto);

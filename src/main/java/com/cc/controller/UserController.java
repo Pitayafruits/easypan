@@ -8,6 +8,7 @@ import com.cc.config.AppConfig;
 import com.cc.entity.constants.Constants;
 import com.cc.entity.dto.SessionWebUserDto;
 import com.cc.entity.dto.UserSpaceDto;
+import com.cc.entity.po.User;
 import com.cc.entity.vo.ResponseVO;
 import com.cc.enums.VerifyRegexEnum;
 import com.cc.exception.BusinessException;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -225,5 +227,16 @@ public class UserController extends ABaseController {
         UserSpaceDto spaceDto = redisComponent.getUserSpaceUse(sessionWebUserDto.getUserId());
         return getSuccessResponseVO(spaceDto);
     }
+
+    /**
+     * 登出
+     */
+    @RequestMapping("/logout")
+    @GlobalInterceptor(checkParams = true)
+    public ResponseVO logout(HttpSession session){
+        session.invalidate(); //清除session
+        return getSuccessResponseVO(null);
+    }
+
 
 }

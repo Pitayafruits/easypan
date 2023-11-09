@@ -249,6 +249,7 @@ public class UserServiceImpl implements UserService {
 		UserSpaceDto userSpaceDto = new UserSpaceDto();
 		//TODO 文件表建好后查询数据库set
 		//userSpaceDto.setUserSpace();
+		//TODO 查询当前用户已经上传文件大小的总和
 		userSpaceDto.setTotalSpace(user.getTotalSpace());
 		redisComponent.saveUserSpaceUse(user.getUserId(),userSpaceDto);
 		return null;
