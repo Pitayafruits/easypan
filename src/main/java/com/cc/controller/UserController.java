@@ -238,5 +238,30 @@ public class UserController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
+    /**
+     * 上传头像
+     */
+    @RequestMapping("/updateUserAvatar")
+    @GlobalInterceptor
+    public ResponseVO updateUserAvatar(HttpSession session, MultipartFile avatar){
+        SessionWebUserDto webUserDto = getUserInfoFromSession(session);
+        String baseFolder = appConfig.getProjectFolder() + Constants.FILE_FOLDER_FILE;
+        File targetFireFolder = new File(baseFolder + Constants.FILE_FOLDER_AVATAR_NAME);
+        if (!targetFireFolder.exists()){
+            targetFireFolder.mkdirs();
+        }
+        File targetFile = new File(targetFireFolder.getPath() + "/" + webUserDto.getUserId() + Constants.AVATAR_SUFFIX);
+        try {
+            avatar.transferTo(targetFile);
+        } catch (Exception e){
+            logger.error("上传头像失败！",e);
+        }
+        User user = new User();
+        user.setQqAvatar("");
+        userService.updateByUserId(user, webUserDto.getUserId());
+        webUserDto.setAvatar(null);
+        session.setAttribute(Constants.SESSION_KEY, webUserDto);
+        return getSuccessResponseVO(null);
+    }
 
 }
