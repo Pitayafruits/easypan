@@ -2,11 +2,13 @@ package com.cc.entity.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 登录用户返回dto
  */
 @Data
-public class SessionWebUserDto {
+public class SessionWebUserDto implements Serializable {
 
     private String userId;
 

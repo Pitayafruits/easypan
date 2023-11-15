@@ -81,7 +81,7 @@ public class UserController extends ABaseController {
      * 发送邮箱验证码
      */
     @PostMapping("/sendEmailCode")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO sendEmailCode(HttpSession session,
                                     @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL, max = 150) String email,
                                     @VerifyParam(required = true) String checkCode,
@@ -102,7 +102,7 @@ public class UserController extends ABaseController {
      * 注册用户
      */
     @PostMapping("/register")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO register(HttpSession session,
                                @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL, max = 150) String email,
                                @VerifyParam(required = true) String nickName,
@@ -125,7 +125,7 @@ public class UserController extends ABaseController {
      * 用户登录
      */
     @PostMapping("/login")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO login(HttpSession session,
                             @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL, max = 150) String email,
                             @VerifyParam(required = true) String password,
@@ -147,7 +147,7 @@ public class UserController extends ABaseController {
      * 找回密码
      */
     @PostMapping("/resetPwd")
-    @GlobalInterceptor
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO resetPwd(HttpSession session,
                                @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL, max = 150) String email,
                                @VerifyParam(required = true, regex = VerifyRegexEnum.PASSWORD, min = 8, max = 18) String password,
@@ -169,7 +169,7 @@ public class UserController extends ABaseController {
      * 获取头像
      */
     @GetMapping("/getAvatar/{userId}")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public void getAvatar(HttpServletResponse response, @VerifyParam(required = true) @PathVariable("userId") String userId) {
             //声明头像存储地址
             String avatarFoldName = Constants.FILE_FOLDER_FILE + Constants.FILE_FOLDER_AVATAR_NAME;
@@ -232,7 +232,6 @@ public class UserController extends ABaseController {
      * 登出
      */
     @RequestMapping("/logout")
-    @GlobalInterceptor(checkParams = true)
     public ResponseVO logout(HttpSession session){
         session.invalidate(); //清除session
         return getSuccessResponseVO(null);
