@@ -102,7 +102,7 @@ public class UserController extends ABaseController {
      * 注册用户
      */
     @PostMapping("/register")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO register(HttpSession session,
                                @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL, max = 150) String email,
                                @VerifyParam(required = true) String nickName,
@@ -147,7 +147,7 @@ public class UserController extends ABaseController {
      * 找回密码
      */
     @PostMapping("/resetPwd")
-    @GlobalInterceptor
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO resetPwd(HttpSession session,
                                @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL, max = 150) String email,
                                @VerifyParam(required = true, regex = VerifyRegexEnum.PASSWORD, min = 8, max = 18) String password,
