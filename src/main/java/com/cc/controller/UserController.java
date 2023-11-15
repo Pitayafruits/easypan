@@ -169,7 +169,7 @@ public class UserController extends ABaseController {
      * 获取头像
      */
     @GetMapping("/getAvatar/{userId}")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public void getAvatar(HttpServletResponse response, @VerifyParam(required = true) @PathVariable("userId") String userId) {
             //声明头像存储地址
             String avatarFoldName = Constants.FILE_FOLDER_FILE + Constants.FILE_FOLDER_AVATAR_NAME;
