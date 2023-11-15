@@ -232,7 +232,6 @@ public class UserController extends ABaseController {
      * 登出
      */
     @RequestMapping("/logout")
-    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO logout(HttpSession session){
         session.invalidate(); //清除session
         return getSuccessResponseVO(null);
