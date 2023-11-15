@@ -81,7 +81,7 @@ public class UserController extends ABaseController {
      * 发送邮箱验证码
      */
     @PostMapping("/sendEmailCode")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO sendEmailCode(HttpSession session,
                                     @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL, max = 150) String email,
                                     @VerifyParam(required = true) String checkCode,
