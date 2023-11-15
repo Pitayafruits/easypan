@@ -125,7 +125,7 @@ public class UserController extends ABaseController {
      * 用户登录
      */
     @PostMapping("/login")
-    @GlobalInterceptor(checkParams = true)
+    @GlobalInterceptor(checkParams = true,checkLogin = false)
     public ResponseVO login(HttpSession session,
                             @VerifyParam(required = true, regex = VerifyRegexEnum.EMAIL, max = 150) String email,
                             @VerifyParam(required = true) String password,
