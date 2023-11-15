@@ -2,6 +2,8 @@ package com.cc.aspect;
 
 import com.cc.annotaion.GlobalInterceptor;
 import com.cc.annotaion.VerifyParam;
+import com.cc.entity.constants.Constants;
+import com.cc.entity.dto.SessionWebUserDto;
 import com.cc.enums.ResponseCodeEnum;
 import com.cc.exception.BusinessException;
 import com.cc.utils.StringTools;
@@ -14,7 +16,11 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -48,7 +54,12 @@ public class GlobalOperationAspect {
             if (null == interceptor) {
                 return;
             }
-
+            /**
+             * 校验登录
+             */
+            if (interceptor.checkLogin() || interceptor.checkAdmin()){
+                checkLogin(interceptor.checkAdmin());
+            }
             /**
              * 校验参数
              */
@@ -64,6 +75,22 @@ public class GlobalOperationAspect {
         } catch (Throwable e) {
             logger.error("全局拦截器异常", e);
             throw new BusinessException(ResponseCodeEnum.CODE_500);
+        }
+    }
+
+    /**
+     * 登录校验
+     * @param checkAdmin
+     */
+    private void checkLogin(Boolean checkAdmin) throws BusinessException {
+        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
+        SessionWebUserDto userDto = (SessionWebUserDto) session.getAttribute(Constants.SESSION_KEY);
+        if (userDto == null){
+            throw new BusinessException(ResponseCodeEnum.CODE_901);
+        }
+        if (checkAdmin && !userDto.isAdmin()){
+            throw new BusinessException(ResponseCodeEnum.CODE_404);
         }
     }
 
